@@ -17,7 +17,7 @@ def main():
     toggled = False
 
     while True:
-        if keyboard.is_pressed("x"):
+        if keyboard.is_pressed(hop_key):
             if not toggled:
                 toggled = True
                 print("Bhop has been toggled on.")
