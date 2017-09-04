@@ -1,5 +1,6 @@
 import keyboard
 import pymem
+import pymem.process
 import time
 from config import *
 
@@ -7,12 +8,13 @@ pm = pymem.Pymem("csgo.exe")
 
 
 def main():
-    toggled = False
-    print("Ruby has launched. Auto bunny hopping is disabled. Toggle on with '{}'".format(hop_key))
-    player = client_base + local_player
-    in_air = pm.read_int(player) + m_fflags
+    print("Ruby has launched. Enable bhop with {}.".format(hop_key))
+    client = pymem.process.module_from_name(pm.process_id, "client.dll")
+    player = client.base_address + dwLocalPlayer
+    in_air = pm.read_int(player) + m_fFlags
+    force_jump = client.base_address + dwForceJump
 
-    force_jump = client_base + dwforcejump
+    toggled = False
 
     while True:
         if keyboard.is_pressed("x"):
@@ -26,7 +28,6 @@ def main():
                 time.sleep(1)
 
         result = pm.read_char(in_air)
-        print(result)
 
         if toggled is True:
             if keyboard.is_pressed("space"):
