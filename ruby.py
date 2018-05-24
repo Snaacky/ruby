@@ -14,17 +14,20 @@ def main():
     print("Ruby has launched.")
     
     while True:
-        player = pm.read_int(client + dwLocalPlayer)
-        force_jump = client + dwForceJump
-        on_ground = pm.read_char(player + m_fFlags)
+        try:
+            player = pm.read_int(client + dwLocalPlayer)
+            force_jump = client + dwForceJump
+            on_ground = pm.read_char(player + m_fFlags)
 
-        if keyboard.is_pressed("space"):
-            if on_ground is 1:
-                pm.write_int(force_jump, 5)
-                time.sleep(0.20)
-                pm.write_int(force_jump, 4)
-                time.sleep(0.20)
-        time.sleep(0.002)
+            if keyboard.is_pressed("space"):
+                if on_ground is 1:
+                    pm.write_int(force_jump, 5)
+                    time.sleep(0.20)
+                    pm.write_int(force_jump, 4)
+                    time.sleep(0.20)
+            time.sleep(0.002)
+        except pymem.exception.MemoryReadError:
+            pass
 
 
 if __name__ == '__main__':
