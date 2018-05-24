@@ -2,40 +2,29 @@ import keyboard
 import pymem
 import pymem.process
 import time
-from config import *
+
+dwForceJump = (0x4F1B9E0)
+dwLocalPlayer = (0xAA9AB4)
+m_fFlags = (0x100)
 
 pm = pymem.Pymem("csgo.exe")
-
+client = pymem.process.module_from_name(pm.process_id, "client.dll").base_address
 
 def main():
-    print("Ruby has launched. Enable bhop with {}.".format(hop_key))
-    client = pymem.process.module_from_name(pm.process_id, "client.dll")
-    player = client.base_address + dwLocalPlayer
-    in_air = pm.read_int(player) + m_fFlags
-    force_jump = client.base_address + dwForceJump
-
-    toggled = False
-
+    print("Ruby has launched.")
+    
     while True:
-        if keyboard.is_pressed(hop_key):
-            if not toggled:
-                toggled = True
-                print("Bhop has been toggled on.")
-                time.sleep(1)
-            else:
-                toggled = False
-                print("Bhop has been toggled off.")
-                time.sleep(1)
+        player = pm.read_int(client + dwLocalPlayer)
+        force_jump = client + dwForceJump
+        on_ground = pm.read_char(player + m_fFlags)
 
-        result = pm.read_char(in_air)
-
-        if toggled is True:
-            if keyboard.is_pressed("space"):
-                if result is 1:
-                    pm.write_int(force_jump, 5)
-                    time.sleep(0.20)
-                    pm.write_int(force_jump, 4)
-                    time.sleep(0.20)
+        if keyboard.is_pressed("space"):
+            if on_ground is 1:
+                pm.write_int(force_jump, 5)
+                time.sleep(0.20)
+                pm.write_int(force_jump, 4)
+                time.sleep(0.20)
+        time.sleep(0.002)
 
 
 if __name__ == '__main__':
