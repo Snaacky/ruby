@@ -4,15 +4,15 @@ import pymem.process
 import time
 from win32gui import GetWindowText, GetForegroundWindow
 
-dwForceJump = (0x51ED750)
-dwLocalPlayer = (0xD2FB84)
+dwForceJump = (0x51F4D88)
+dwLocalPlayer = (0xD36B94)
 m_fFlags = (0x104)
 
 
 def main():
     print("Ruby has launched.")
     pm = pymem.Pymem("csgo.exe")
-    client = pymem.process.module_from_name(pm.process_handle, "client_panorama.dll").lpBaseOfDll
+    client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
 
     while True:
         if not GetWindowText(GetForegroundWindow()) == "Counter-Strike: Global Offensive":
